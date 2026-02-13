@@ -158,7 +158,6 @@ let scale = 1;
 noBtn.onclick = () => {
   text.innerText = texts[Math.min(count, texts.length-1)];
   count++;
-
   scale += 0.15;
   yesBtn.style.transform = "scale(" + scale + ")";
 };
@@ -166,41 +165,64 @@ noBtn.onclick = () => {
 yesBtn.onclick = () => {
   ask.classList.add("hidden");
   yesScreen.classList.remove("hidden");
-  startConfetti();
+  startConfetti(); // ← конфетти только здесь
 };
 
-// confetti
+/////// CONFETTI ///////
+
 const canvas = document.getElementById("confetti");
 const ctx = canvas.getContext("2d");
-canvas.width = innerWidth;
-canvas.height = innerHeight;
 
-let pieces = [];
+function resize(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+let confetti = [];
+let running = false;
 
 function startConfetti(){
-  for(let i=0;i<300;i++){
-    pieces.push({
-      x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height,
-      r:Math.random()*6,
-      vx:Math.random()*4-2,
-      vy:Math.random()*4+2
+  confetti = [];
+
+  for(let i=0;i<500;i++){   // ← больше конфетти
+    confetti.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*-canvas.height,
+      size: Math.random()*14 + 6,  // ← крупнее
+      speed: Math.random()*3 + 2,
+      swing: Math.random()*2,
+      color: `hsl(${Math.random()*360},100%,60%)`
     });
   }
-  animate();
+
+  running = true;
+  animateConfetti();
 }
 
-function animate(){
+function animateConfetti(){
+  if(!running) return;
+
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  for(let p of pieces){
-    p.x+=p.vx;
-    p.y+=p.vy;
-    ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;
-    ctx.fillRect(p.x,p.y,p.r,p.r);
+
+  for(let c of confetti){
+    c.y += c.speed;
+    c.x += Math.sin(c.y*0.01)*c.swing;
+
+    ctx.fillStyle = c.color;
+    ctx.fillRect(c.x, c.y, c.size, c.size);
+
+    if(c.y > canvas.height){
+      c.y = -20;
+    }
   }
-  requestAnimationFrame(animate);
+
+  requestAnimationFrame(animateConfetti);
 }
 </script>
 
+
 </body>
 </html>
+
