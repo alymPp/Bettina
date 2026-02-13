@@ -1,322 +1,206 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Valentine?</title>
-  <style>
-    :root{
-      --bg:#fff7fb;
-      --card:#ffffffcc;
-      --text:#2b2b2b;
-      --muted:#6b6b6b;
-      --yes:#31c56b;
-      --no:#ff5b6a;
-      --shadow: 0 10px 30px rgba(0,0,0,.08);
-      --radius: 22px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine?</title>
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background: radial-gradient(1200px 600px at 50% 20%, #ffe3f0 0%, var(--bg) 50%, #fff 100%);
-      color:var(--text);
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-      overflow:hidden;
-    }
+<style>
+:root{
+  --bg:#fff7fb;
+  --card:#ffffffcc;
+  --text:#2b2b2b;
+  --yes:#31c56b;
+  --no:#ff5b6a;
+}
 
-    .card{
-      width:min(520px, 100%);
-      background:var(--card);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,.7);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
-      padding: 22px 18px;
-      text-align:center;
-      position:relative;
-    }
+*{box-sizing:border-box}
 
-    .title{
-      font-size: clamp(24px, 4vw, 34px);
-      margin: 8px 0 6px;
-      letter-spacing: .2px;
-    }
+body{
+  margin:0;
+  font-family: system-ui;
+  background:linear-gradient(#ffe3f0,#fff);
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
 
-    .subtitle{
-      margin: 0 0 14px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+.card{
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  text-align:center;
+  width:420px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.1);
+}
 
-    .bear{
-      width: 130px;
-      height: 130px;
-      object-fit: contain;
-      margin: 6px auto 10px;
-      display:block;
-      filter: drop-shadow(0 10px 12px rgba(0,0,0,.08));
-      animation: floaty 2.6s ease-in-out infinite;
-    }
+.bear{
+  width:120px;
+  margin-bottom:10px;
+}
 
-    @keyframes floaty{
-      0%,100%{ transform: translateY(0) }
-      50%{ transform: translateY(-7px) }
-    }
+.title{
+  font-size:28px;
+  margin-bottom:10px;
+}
 
-    .question{
-      font-size: 18px;
-      margin: 8px 0 16px;
-    }
+.subtitle{
+  color:gray;
+  margin-bottom:15px;
+}
 
-    .btnRow{
-      display:flex;
-      justify-content:center;
-      gap: 12px;
-      flex-wrap:wrap;
-      margin-top: 6px;
-    }
+.question{
+  font-size:18px;
+  margin-bottom:20px;
+}
 
-    button{
-      border:0;
-      padding: 12px 18px;
-      border-radius: 14px;
-      font-size: 16px;
-      cursor:pointer;
-      transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
-      box-shadow: 0 10px 20px rgba(0,0,0,.08);
-      user-select:none;
-    }
+button{
+  padding:12px 22px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  cursor:pointer;
+  margin:6px;
+}
 
-    button:active{ transform: translateY(1px) scale(.99); }
+#yesBtn{
+  background:var(--yes);
+  color:white;
+  transition:0.2s;
+}
 
-    #yesBtn{
-      background: var(--yes);
-      color:white;
-      transform-origin: center;
-    }
+#noBtn{
+  background:var(--no);
+  color:white;
+}
 
-    #noBtn{
-      background: var(--no);
-      color:white;
-      opacity: .95;
-    }
+.hidden{
+  display:none;
+}
 
-    /* “puuung-ish” cute tiny stickers */
-    .sticker{
-      position:absolute;
-      font-size: 18px;
-      opacity:.45;
-      filter: blur(.1px);
-      animation: drift 6s ease-in-out infinite;
-    }
-    .s1{top:14px; left:16px; animation-delay:0s}
-    .s2{top:18px; right:18px; animation-delay:1.2s}
-    .s3{bottom:14px; left:22px; animation-delay:2.4s}
-    .s4{bottom:14px; right:22px; animation-delay:3.1s}
-    @keyframes drift{
-      0%,100%{ transform: translateY(0) rotate(0deg) }
-      50%{ transform: translateY(-10px) rotate(4deg) }
-    }
+.photo{
+  width:100%;
+  border-radius:18px;
+  margin-top:15px;
+}
 
-    /* celebration screen */
-    .hidden{ display:none; }
-
-    .yesScreen{
-      text-align:center;
-      padding: 10px 6px 4px;
-    }
-
-    .yay{
-      font-size: clamp(22px, 4vw, 30px);
-      margin: 6px 0 10px;
-    }
-
-    .photoWrap{
-      width: min(360px, 100%);
-      margin: 10px auto 10px;
-      border-radius: 20px;
-      overflow:hidden;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(255,255,255,.7);
-      transform: translateZ(0);
-    }
-
-    .photoWrap img{
-      width:100%;
-      display:block;
-      object-fit: cover;
-    }
-
-    .smallNote{
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 10px;
-    }
-
-    canvas{
-      position: fixed;
-      inset:0;
-      pointer-events:none;
-    }
-  </style>
+canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+}
+</style>
 </head>
 
 <body>
-  <canvas id="confetti"></canvas>
 
-  <div class="card" id="card">
-    <div class="sticker s1">💗</div>
-    <div class="sticker s2">✨</div>
-    <div class="sticker s3">🌸</div>
-    <div class="sticker s4">💌</div>
+<canvas id="confetti"></canvas>
 
-    <!-- ASK SCREEN -->
-    <div id="askScreen">
-      <img class="bear" src="assets/bear.gif" alt="cute bear"/>
-      <h1 class="title">My princess Switzerland <br> Will you be my Valentine?</h1>
-      <p class="subtitle">I made this little page just for you, Janym✨</p>
+<div class="card">
 
-      <div class="btnRow">
-        <button id="yesBtn">Yes</button>
-        <button id="noBtn">No</button>
-      </div>
-    </div>
+<div id="askScreen">
+  <img class="bear" src="assets/bear.gif">
+  <div class="title">My princess Switzerland 💖</div>
+  <div class="subtitle">Will you be my Valentine?</div>
 
-    <!-- YES SCREEN -->
-    <div id="yesScreen" class="yesScreen hidden">
-      <div class="yay" id="yayText">Yaaayyy! My princess said yes 💖</div>
-
-      <div class="photoWrap">
-        <img src="assets/us.jpg" alt="us"/>
-      </div>
-
-      <div class="smallNote">Happy Valentine’s Day, Bettina!🌷</div>
-    </div>
+  <div class="question" id="questionText">
+    Say yes and make me the happiest 🥺
   </div>
 
-  <script>
-    // --- Text sequence for "No" clicks (20+) ---
-    const noTexts = [
-      "Are you sure? 🥺",
-      "Really sure?",
-      "Like… 100% sure?",
-      "Think again 😳",
-      "Please reconsider 🫶",
-      "My heart is getting nervous 💓",
-      "Don’t do this to me 😭",
-      "Last chance… maybe?",
-      "Are you absolutely sure??",
-      "I’ll be extra nice, promise 😇",
-      "Okay but… why no? 😔",
-      "You’re breaking my tiny pixel heart 💔",
-      "Let’s pretend you clicked Yes 😄",
-      "I’m gonna ask again nicely…",
-      "Still no? 🥲",
-      "Maybe you misclicked?",
-      "Try the green button 😌",
-      "One more time… please?",
-      "This is really the last chance…",
-      "Final final chance 😭",
-      "Okay… I won’t give up 😤"
-    ];
+  <button id="yesBtn">Yes</button>
+  <button id="noBtn">No</button>
+</div>
 
-    const askScreen = document.getElementById("askScreen");
-    const yesScreen = document.getElementById("yesScreen");
-    const questionText = document.getElementById("questionText");
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
+<div id="yesScreen" class="hidden">
+  <h2>YAAAYYY! 💖</h2>
+  <h3>My princess said YES 😭✨</h3>
+  <img src="assets/us.jpg" class="photo">
+  <p>Happy Valentine's Day Bettina 🌷</p>
+</div>
 
-    let noCount = 0;
-    let yesScale = 1;
+</div>
 
-    noBtn.addEventListener("click", () => {
-      const txt = noTexts[Math.min(noCount, noTexts.length - 1)];
-      questionText.textContent = txt;
-      noCount++;
+<script>
+const texts = [
+"Are you sure? 🥺",
+"Really sure?",
+"Think again",
+"Please reconsider",
+"Don't break my heart",
+"Last chance",
+"Are you 100% sure?",
+"Please 😭",
+"Okay but why no?",
+"I will cry",
+"Try yes instead",
+"Still no?",
+"Maybe misclick?",
+"Think again",
+"Final chance",
+"Really final",
+"Super final",
+"Ultra final",
+"Okay I won't stop",
+"I'll keep asking 😭"
+];
 
-      // Increase Yes button size each time
-      yesScale = Math.min(3.2, yesScale + 0.12);
-      yesBtn.style.transform = `scale(${yesScale})`;
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const text = document.getElementById("questionText");
+const ask = document.getElementById("askScreen");
+const yesScreen = document.getElementById("yesScreen");
 
-      // Optional: slightly fade No
-      noBtn.style.opacity = String(Math.max(0.45, 0.95 - noCount * 0.03));
+let count = 0;
+let scale = 1;
+
+noBtn.onclick = () => {
+  text.innerText = texts[Math.min(count, texts.length-1)];
+  count++;
+
+  scale += 0.15;
+  yesBtn.style.transform = "scale(" + scale + ")";
+};
+
+yesBtn.onclick = () => {
+  ask.classList.add("hidden");
+  yesScreen.classList.remove("hidden");
+  startConfetti();
+};
+
+// confetti
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+let pieces = [];
+
+function startConfetti(){
+  for(let i=0;i<300;i++){
+    pieces.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:Math.random()*6,
+      vx:Math.random()*4-2,
+      vy:Math.random()*4+2
     });
+  }
+  animate();
+}
 
-    yesBtn.addEventListener("click", () => {
-      askScreen.classList.add("hidden");
-      yesScreen.classList.remove("hidden");
-      startConfetti();
-    });
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(let p of pieces){
+    p.x+=p.vx;
+    p.y+=p.vy;
+    ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;
+    ctx.fillRect(p.x,p.y,p.r,p.r);
+  }
+  requestAnimationFrame(animate);
+}
+</script>
 
-    // --- Confetti (simple canvas) ---
-    const canvas = document.getElementById("confetti");
-    const ctx = canvas.getContext("2d");
-    let W, H;
-    function resize(){
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
-    window.addEventListener("resize", resize);
-    resize();
-
-    const pieces = [];
-    function rand(min,max){ return Math.random()*(max-min)+min; }
-
-    function spawnConfetti(amount=220){
-      pieces.length = 0;
-      for(let i=0;i<amount;i++){
-        pieces.push({
-          x: rand(0,W),
-          y: rand(-H, 0),
-          r: rand(3,7),
-          vx: rand(-1.5,1.5),
-          vy: rand(2,5),
-          rot: rand(0,Math.PI*2),
-          vr: rand(-0.2,0.2),
-          // no fixed colors requested: use random bright-ish via hsl
-          hue: Math.floor(rand(0,360)),
-          alpha: rand(0.7,1)
-        });
-      }
-    }
-
-    let anim;
-    function draw(){
-      ctx.clearRect(0,0,W,H);
-      for(const p of pieces){
-        p.x += p.vx;
-        p.y += p.vy;
-        p.rot += p.vr;
-
-        if(p.y > H + 30){
-          p.y = rand(-80,-10);
-          p.x = rand(0,W);
-        }
-
-        ctx.save();
-        ctx.translate(p.x,p.y);
-        ctx.rotate(p.rot);
-        ctx.globalAlpha = p.alpha;
-        ctx.fillStyle = `hsla(${p.hue}, 90%, 60%, ${p.alpha})`;
-        ctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
-        ctx.restore();
-      }
-      anim = requestAnimationFrame(draw);
-    }
-
-    function startConfetti(){
-      spawnConfetti(260);
-      cancelAnimationFrame(anim);
-      draw();
-      // stop after some seconds (optional)
-      setTimeout(() => cancelAnimationFrame(anim), 9000);
-    }
-  </script>
 </body>
 </html>
