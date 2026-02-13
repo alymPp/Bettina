@@ -123,106 +123,126 @@ canvas{
 </div>
 
 <script>
-const texts = [
-"Are you sure? 🥺",
-"Really sure?",
-"Think again",
-"Please reconsider",
-"Don't break my heart",
-"Last chance",
-"Are you 100% sure?",
-"Please 😭",
-"Okay but why no?",
-"I will cry",
-"Try yes instead",
-"Still no?",
-"Maybe misclick?",
-"Think again",
-"Final chance",
-"Really final",
-"Super final",
-"Ultra final",
-"Okay I won't stop",
-"I'll keep asking 😭"
-];
+    // --- Text sequence for "No" clicks (20+) ---
+    const noTexts = [
+      "Are you sure? 🥺",
+      "Really sure?",
+      "Like… 100% sure?",
+      "Think again 😳",
+      "Please reconsider 🫶",
+      "My heart is getting nervous 💓",
+      "Don’t do this to me 😭",
+      "Last chance… maybe?",
+      "Are you absolutely sure??",
+      "I’ll be extra nice, promise 😇",
+      "Okay but… why no? 😔",
+      "You’re breaking my tiny pixel heart 💔",
+      "Let’s pretend you clicked Yes 😄",
+      "I’m gonna ask again nicely…",
+      "Still no? 🥲",
+      "Maybe you misclicked?",
+      "Try the green button 😌",
+      "One more time… please?",
+      "This is really the last chance…",
+      "Final final chance 😭",
+      "Okay… I won’t give up 😤"
+    ];
 
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const text = document.getElementById("questionText");
-const ask = document.getElementById("askScreen");
-const yesScreen = document.getElementById("yesScreen");
+    const askScreen = document.getElementById("askScreen");
+    const yesScreen = document.getElementById("yesScreen");
+    const questionText = document.getElementById("questionText");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
 
-let count = 0;
-let scale = 1;
+    let noCount = 0;
+    let yesScale = 1;
 
-noBtn.onclick = () => {
-  text.innerText = texts[Math.min(count, texts.length-1)];
-  count++;
-  scale += 0.15;
-  yesBtn.style.transform = "scale(" + scale + ")";
-};
+    noBtn.addEventListener("click", () => {
+      const txt = noTexts[Math.min(noCount, noTexts.length - 1)];
+      questionText.textContent = txt;
+      noCount++;
 
-yesBtn.onclick = () => {
-  ask.classList.add("hidden");
-  yesScreen.classList.remove("hidden");
-  startConfetti(); // ← конфетти только здесь
-};
+      // Increase Yes button size each time
+      yesScale = Math.min(3.2, yesScale + 0.12);
+      yesBtn.style.transform = `scale(${yesScale})`;
 
-/////// CONFETTI ///////
-
-const canvas = document.getElementById("confetti");
-const ctx = canvas.getContext("2d");
-
-function resize(){
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
-
-let confetti = [];
-let running = false;
-
-function startConfetti(){
-  confetti = [];
-
-  for(let i=0;i<500;i++){   // ← больше конфетти
-    confetti.push({
-      x: Math.random()*canvas.width,
-      y: Math.random()*-canvas.height,
-      size: Math.random()*14 + 6,  // ← крупнее
-      speed: Math.random()*3 + 2,
-      swing: Math.random()*2,
-      color: `hsl(${Math.random()*360},100%,60%)`
+      // Optional: slightly fade No
+      noBtn.style.opacity = String(Math.max(0.45, 0.95 - noCount * 0.03));
     });
-  }
 
-  running = true;
-  animateConfetti();
-}
+    yesBtn.addEventListener("click", () => {
+      askScreen.classList.add("hidden");
+      yesScreen.classList.remove("hidden");
+      startConfetti();
+    });
 
-function animateConfetti(){
-  if(!running) return;
-
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  for(let c of confetti){
-    c.y += c.speed;
-    c.x += Math.sin(c.y*0.01)*c.swing;
-
-    ctx.fillStyle = c.color;
-    ctx.fillRect(c.x, c.y, c.size, c.size);
-
-    if(c.y > canvas.height){
-      c.y = -20;
+    // --- Confetti (simple canvas) ---
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    let W, H;
+    function resize(){
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
     }
-  }
+    window.addEventListener("resize", resize);
+    resize();
 
-  requestAnimationFrame(animateConfetti);
-}
+    const pieces = [];
+    function rand(min,max){ return Math.random()*(max-min)+min; }
+
+    function spawnConfetti(amount=220){
+      pieces.length = 0;
+      for(let i=0;i<amount;i++){
+        pieces.push({
+          x: rand(0,W),
+          y: rand(-H, 0),
+          r: rand(3,7),
+          vx: rand(-1.5,1.5),
+          vy: rand(2,5),
+          rot: rand(0,Math.PI*2),
+          vr: rand(-0.2,0.2),
+          // no fixed colors requested: use random bright-ish via hsl
+          hue: Math.floor(rand(0,360)),
+          alpha: rand(0.7,1)
+        });
+      }
+    }
+
+    let anim;
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      for(const p of pieces){
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+
+        if(p.y > H + 30){
+          p.y = rand(-80,-10);
+          p.x = rand(0,W);
+        }
+
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = `hsla(${p.hue}, 90%, 60%, ${p.alpha})`;
+        ctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
+        ctx.restore();
+      }
+      anim = requestAnimationFrame(draw);
+    }
+
+    function startConfetti(){
+      spawnConfetti(260);
+      cancelAnimationFrame(anim);
+      draw();
+      // stop after some seconds (optional)
+      setTimeout(() => cancelAnimationFrame(anim), 9000);
+    }
 </script>
 
 
 </body>
 </html>
+
 
